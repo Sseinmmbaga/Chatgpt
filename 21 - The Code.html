@@ -1,0 +1,267 @@
+<pre class="prettyprint linenums">&lt;meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" /&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;&lt;/html&gt;
+
+&lt;!--Beginning of HTML below--&gt;
+&lt;html&gt;
+&lt;head&gt;
+&nbsp; 
+&nbsp; &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"&gt;
+
+&nbsp; &lt;!--Beginning of CSS styles below, all from Bootstrap--&gt;
+&nbsp; &lt;style&gt;
+
+&nbsp; &nbsp; .bd-placeholder-img {
+&nbsp; &nbsp; &nbsp; font-size: 1.125rem;
+&nbsp; &nbsp; &nbsp; text-anchor: middle;
+&nbsp; &nbsp; &nbsp; -webkit-user-select: none;
+&nbsp; &nbsp; &nbsp; -moz-user-select: none;
+&nbsp; &nbsp; &nbsp; user-select: none;
+&nbsp; &nbsp; }
+
+&nbsp; &nbsp; @media (min-width: 768px) {
+&nbsp; &nbsp; &nbsp; .bd-placeholder-img-lg {
+&nbsp; &nbsp; &nbsp; &nbsp; font-size: 3.5rem;
+&nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; }
+
+&nbsp; &nbsp; .b-example-divider {
+&nbsp; &nbsp; &nbsp; height: 3rem;
+&nbsp; &nbsp; &nbsp; background-color: rgba(0, 0, 0, .1);
+&nbsp; &nbsp; &nbsp; border: solid rgba(0, 0, 0, .15);
+&nbsp; &nbsp; &nbsp; border-width: 1px 0;
+&nbsp; &nbsp; &nbsp; box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+&nbsp; &nbsp; }
+
+&nbsp; &nbsp; .b-example-vr {
+&nbsp; &nbsp; &nbsp; flex-shrink: 0;
+&nbsp; &nbsp; &nbsp; width: 1.5rem;
+&nbsp; &nbsp; &nbsp; height: 100vh;
+&nbsp; &nbsp; }
+
+&nbsp; &nbsp; .bi {
+&nbsp; &nbsp; &nbsp; vertical-align: -.125em;
+&nbsp; &nbsp; &nbsp; fill: currentColor;
+&nbsp; &nbsp; }
+
+&nbsp; &nbsp; .nav-scroller {
+&nbsp; &nbsp; &nbsp; position: relative;
+&nbsp; &nbsp; &nbsp; z-index: 2;
+&nbsp; &nbsp; &nbsp; height: 2.75rem;
+&nbsp; &nbsp; &nbsp; overflow-y: hidden;
+&nbsp; &nbsp; }
+
+&nbsp; &lt;/style&gt;
+
+&nbsp; 
+&nbsp; &lt;!-- Custom styles for this template --&gt;
+&nbsp; &lt;link href="heroes.css" rel="stylesheet"&gt;
+&nbsp; &lt;script src="https://code.jquery.com/jquery-3.6.0.min.js"&gt;&lt;/script&gt;
+
+&nbsp; 
+&nbsp; &lt;!--Below is the JS code to call the OpenAI API--&gt;
+&nbsp; &lt;script&gt;
+&nbsp; &nbsp; 
+&nbsp; &nbsp; /*Below is called when the button is clicked*/
+&nbsp; &nbsp; function callOpenAiAPI(buttonClicked) {
+&nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; /*These for loops look for the radio buttons that are checked and then assign the values to the variables - revType, infraType, yearsRev*/
+&nbsp; &nbsp; &nbsp; let revType = document.getElementsByName('revenueType');
+&nbsp; &nbsp; &nbsp; for(i = 0; i &lt; revType.length; i++) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(revType[i].checked)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; revType = revType[i].value;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+
+&nbsp; &nbsp; &nbsp; let infraType = document.getElementsByName('typeOfInfra');
+&nbsp; &nbsp; &nbsp; for(i = 0; i &lt; infraType.length; i++) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(infraType[i].checked)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; infraType = infraType[i].value;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+
+&nbsp; &nbsp; &nbsp; let yearsRev = document.getElementsByName('yearsProj');
+&nbsp; &nbsp; &nbsp; for(i = 0; i &lt; yearsRev.length; i++) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(yearsRev[i].checked)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; yearsRev = yearsRev[i].value;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+
+&nbsp; &nbsp; &nbsp; /*Below sets up a variable called modelToUse which uses davinci or curie depending on which button is clicked*/
+&nbsp; &nbsp; &nbsp; let modelToUse = 'text-davinci-003';
+
+&nbsp; &nbsp; &nbsp; let openAIQuery = `tell me how to finance this infrastructure project. The project is for ${infraType} type of infrastructure in Africa for ${yearsRev} where I answered the following to whether I have signed revenue: ${revType}. Give me a short bit of advice on how to best achieve financial close given the information I have shared.`;
+&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; /*openAIQuery is the actual query that is passed to the ChatGPT engine - the variables hold the selections that are inserted into the query and then sent to the API*/
+&nbsp; &nbsp; &nbsp; if(buttonClicked.innerText == 'Write me a letter requesting funding.') {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; modelToUse = 'text-davinci-003';
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.querySelector('#ButtonDIVLetter').innerHTML = '&lt;span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"&gt;&lt;/span&gt;Loading your letter. Please be patient.';
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; openAIQuery = `Write a letter requesting project finance funding for a &nbsp;${infraType} type of infrastructure in Africa for ${yearsRev} where I answered the following to whether I have signed revenue: ${revType}.`;
+&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; }
+
+&nbsp; &nbsp; &nbsp; if(buttonClicked.innerText == 'Give me advice!') {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; modelToUse = 'text-davinci-003';
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.querySelector('#ButtonDIVAdvice').innerHTML = '&lt;span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"&gt;&lt;/span&gt;Loading your tailored advice. Please be patient while we formulate our opinion.';
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; openAIQuery = `tell me how to finance this infrastructure project. The project is for ${infraType} type of infrastructure in Africa for ${yearsRev} where I answered the following to whether I have signed revenue: ${revType}. Give me a short bit of advice on how to best achieve financial close given the information I have shared.`;
+&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; }
+
+&nbsp; &nbsp; &nbsp; $.ajax({
+&nbsp; &nbsp; &nbsp; &nbsp; url: 'https://api.openai.com/v1/completions', &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /*The link used to access the APIs*/
+&nbsp; &nbsp; &nbsp; &nbsp; type: 'POST', &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /*Type of API call*/
+&nbsp; &nbsp; &nbsp; &nbsp; headers: { &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 'Authorization': 'Bearer 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', &nbsp; &nbsp; &nbsp;/*The API key*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 'Content-Type': 'application/json' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/*The message sent to OpenAI API needs to be in JSON format*/
+&nbsp; &nbsp; &nbsp; &nbsp; },
+&nbsp; &nbsp; &nbsp; &nbsp; data: JSON.stringify({ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/*The message sent to OpenAI API needs to be in JSON format*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 'prompt': openAIQuery, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/*The query that is sent (defined above in the variable openAIQuery)*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 'max_tokens': 2500, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /*Tokens can be thought of as pieces of words - https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 'temperature': 0.4, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /*The temperature controls how much randomness is in the output - &nbsp;https://algowriting.medium.com/gpt-3-temperature-setting-101-41200ff0d0be*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 'model': modelToUse &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /*Models - https://platform.openai.com/docs/models#:~:text=We%20offer%20four%20main%20models,and%20Ada%20is%20the%20fastest.&amp;text=Most%20capable%20GPT%2D3%20model,output%20and%20better%20instruction%2Dfollowing.*/
+&nbsp; &nbsp; &nbsp; &nbsp; }),
+&nbsp; &nbsp; &nbsp; &nbsp; success: function (data) { &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/*The message received from the OpenAI API is in JSON format and needs to be converted back to text*/ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $('#result').text(data.choices[0].text); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/*Return result to the HTML to display*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.querySelector('#ButtonDIVAdvice').innerHTML ='Give me advice!'; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/*Change the button texts back to the original text*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.querySelector('#ButtonDIVLetter').innerHTML = 'Write me a letter requesting funding.'; &nbsp; &nbsp; /*Change the button texts back to the original text*/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; });
+&nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; }
+&nbsp; &lt;/script&gt; &lt;!-- End of the JS code--&gt;
+
+&lt;!-- Start of the HTML body code below--&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&nbsp; &lt;div&gt;
+&nbsp; &nbsp; &lt;title&gt;The Financial Modelling Podcast InfraAdvisor Beta&lt;/title&gt;
+&nbsp; &nbsp; &lt;div class="px-4 py-2 my-2 text-center"&gt;
+&nbsp; &nbsp; &nbsp; &lt;!-- Below chooses an imagee to display--&gt;
+&nbsp; &nbsp; &nbsp; &lt;img class="d-block mx-auto mb-4" src="https://sp-ao.shortpixel.ai/client/to_auto,q_lossless,ret_img,w_150/https://financialmodellingpodcast.com/wp-content/uploads/2019/09/png-2-1-150x150.png" alt="" width="150" height="150"&gt;
+&nbsp; &nbsp; &nbsp; &lt;h1 class="display-7 fw-bold"&gt;The Financial Modelling Podcast InfraAdvisor Beta&lt;/h1&gt;
+&nbsp; &nbsp; &nbsp; &lt;figure class="text-center"&gt;
+
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- I liked this CSS for a quote! --&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;blockquote class="blockquote"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;p&gt;The infrastructure sector is about building assets that make our lives better.&lt;/p&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;/blockquote&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;figcaption class="blockquote-footer"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;cite title="Source Title"&gt;The Financial Modelling Podcast&lt;/cite&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;/figcaption&gt;
+&nbsp; &nbsp; &nbsp; &lt;/figure&gt;
+&nbsp; &nbsp; &lt;/div&gt;
+
+&nbsp; &nbsp; &lt;!-- Start of the questions and radio buttons below --&gt;
+&nbsp; &nbsp; &lt;div class="flex-parent jc-center text-center"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;title&gt;What type of infrastructure do you want to build?&lt;/title&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;h4 class="fw-bold"&gt;What type of infrastructure do you want to build?&lt;/h4&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="typeOfInfra" id="infraType" checked value="Roads and Borders"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;label class="form-check-label" for="infraType"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Roads and Borders
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;br&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="typeOfInfra" id="PowerPlants" value="Power Plants"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;label class="form-check-label" for="PowerPlants"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Power Plants
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;br&gt;
+&nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="typeOfInfra" id="AirportsInput" value="Airports"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;label class="form-check-label" for="AirportsInput"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Airports
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &lt;/div&gt;
+&nbsp; &nbsp; &lt;br&gt;
+&nbsp; &nbsp; &lt;br&gt;
+
+&nbsp; &nbsp; &lt;div class="flex-parent jc-center text-center"&gt;
+&nbsp; &nbsp; &lt;title&gt;Do you have a signed agreement for your revenue stream?&lt;/title&gt;
+&nbsp; &nbsp; &lt;h4 class="fw-bold"&gt;Do you have a signed agreement for your revenue stream?&lt;/h4&gt;
+&nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="revenueType" id="signedRev" checked value="Yes there is signed revenue"&gt;
+&nbsp; &nbsp; &lt;label class="form-check-label" for="signedRev"&gt;
+&nbsp; &nbsp; &nbsp; Yes
+&nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &lt;br&gt;
+&nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; &lt;input class="block form-check-input" type="radio" name="revenueType" id="notSignedRev" value="No there is not signed revenue"&gt;
+&nbsp; &nbsp; &lt;label class="form-check-label" for="notSignedRev"&gt;
+&nbsp; &nbsp; &nbsp; No
+&nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &lt;br&gt;
+&nbsp; 
+&nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="revenueType" id="someSignedRev" value="Some of the revenue has been signed"&gt;
+&nbsp; &nbsp; &lt;label class="form-check-label" for="someSignedRev"&gt;
+&nbsp; &nbsp; &nbsp; Some of the revenue
+&nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &lt;br&gt;
+&nbsp; &nbsp; &lt;/div&gt;
+
+&nbsp; &nbsp; &lt;br&gt;
+&nbsp; &nbsp; &lt;br&gt;
+&nbsp; &nbsp; &lt;div class="flex-parent jc-center text-center"&gt;
+&nbsp; 
+&nbsp; &nbsp; &lt;title&gt;How many years is the project life?&lt;/title&gt;
+&nbsp; &nbsp; &lt;h4 class="fw-bold"&gt;How many years is the project life?&lt;/h4&gt;
+&nbsp; 
+&nbsp; &nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="yearsProj" id="five" checked value="5 years"&gt;
+&nbsp; &nbsp; &nbsp; &lt;label class="form-check-label" for="five"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; 5
+&nbsp; &nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &nbsp; &lt;br&gt;
+&nbsp; 
+&nbsp; &nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="yearsProj" id="ten" value="10 years"&gt;
+&nbsp; &nbsp; &nbsp; &lt;label class="form-check-label" for="ten"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; 10
+&nbsp; &nbsp; &nbsp; &lt;/label&gt;
+&nbsp; 
+&nbsp; &nbsp; &nbsp; &lt;br&gt;
+&nbsp; &nbsp; &nbsp; &lt;input class="form-check-input" type="radio" name="yearsProj" id="twenty" value="20 years"&gt;
+&nbsp; &nbsp; &nbsp; &lt;label class="form-check-label" for="twenty"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; 20
+&nbsp; &nbsp; &nbsp; &lt;/label&gt;
+&nbsp; &nbsp; &nbsp; &lt;br&gt;
+
+&nbsp; &nbsp; &lt;/div&gt;
+&nbsp; &nbsp; &lt;br&gt;
+&nbsp; &nbsp; &lt;br&gt;
+
+&nbsp; &lt;/div&gt;
+
+&nbsp; &lt;!-- Below are the button--&gt;
+&nbsp; &lt;div class="flex-parent jc-center text-center"&gt;
+&nbsp; &nbsp; &lt;div class="d-grid gap-2 d-md-flex justify-content-md-center"&gt;
+&nbsp; &nbsp; &nbsp; &lt;button onclick="callOpenAiAPI(this)" type="button" id="adviceButton" class="btn btn-primary btn-lg px-4 gap-3"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="ButtonDIVAdvice"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Give me advice!
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+&nbsp; &nbsp; &lt;/button&gt;
+&nbsp; &nbsp; &lt;button onclick="callOpenAiAPI(this)" type="button" id="writeLetter" class="btn btn-primary btn-lg px-4 gap-3"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="ButtonDIVLetter"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Write me a letter requesting funding.
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;
+&nbsp; &nbsp; &lt;/button&gt;
+&nbsp; &lt;/div&gt;
+&nbsp;
+&nbsp; &lt;br&gt;
+&nbsp; &lt;br&gt;
+&nbsp;
+&nbsp; &lt;!-- Display the output/result below --&gt;
+&nbsp; &lt;h5&gt;InfraAdvisor says:&lt;/h5&gt;
+&nbsp; &lt;/div&gt;
+&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;p &gt;&lt;/p&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &lt;div id="result" class="flex-parent jc-center text-center gap-3"&gt;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &lt;/div&gt;
+&nbsp; &nbsp; 
+&nbsp; &lt;/div&gt;
+
+
+&nbsp; &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&nbsp; &nbsp;</pre>
